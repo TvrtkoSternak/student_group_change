@@ -4,9 +4,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import hr.fer.hmo.projekt.utils.FunctionFactory;
+import hr.fer.hmo.projekt.utils.HardConstraints;
 import hr.fer.hmo.projekt.utils.StudentGroup;
 import hr.fer.zemris.optjava.dz3.IFunction;
+import hr.fer.zemris.optjava.dz3.IOptAlgorithm;
 import hr.fer.zemris.optjava.dz3.Parser;
+import hr.fer.zemris.optjava.dz3.SimulatedAnnealing;
+import hr.fer.zemris.optjava.dz3.SingleObjectiveSolution;
 
 public class Program {
 
@@ -23,7 +28,7 @@ public class Program {
 			System.out.println("Fifth argument must be a file with students.");
 			System.exit(1);
 		}
-		long[] students = Parser.parseStudentsFile(studentsFile);
+		long[] students = Parser.parseFile(studentsFile);
 		
 		Path requestsFile = Paths.get(args[5]);
 		if (Files.notExists(requestsFile) || !Files.isRegularFile(requestsFile)) {
@@ -46,21 +51,21 @@ public class Program {
 		}
 		long[] limits = Parser.parseFile(limitsFile);
 		
+		HardConstraints hardConstraints = new HardConstraints();
+		// fill hard constraints
 		
-		IFunction f = new IFunction() {
-			private StudentGroup studentGroup = new StudentGroup();
-			
-			public double valueAt(long[] point) {
-				
-				for (int i = 0; i < point.length; i += 5) {
-					studentGroup.studentId = point[i];
-					studentGroup.activityId = point[i+1];
-					studentGroup.startingGroupId = point[i+2];
-					
-					
-				}
-			}
-		};
+		IFunction f = FunctionFactory.getFunction(students, requests, overlaps, limits, hardConstraints);
+		
+		IOptAlgorithm<SingleObjectiveSolution> alg = new SimulatedAnnealing(
+				f, 
+				false, 
+				startingSolution, 
+				schedule, 
+				neighborhoodGenerator, 
+				decoder
+		);
+		
+		alg.run();
 	}
 
 }

@@ -29,19 +29,14 @@ public class Parser {
 		
 	}
 	
-	private static HashMap<Pair, Pair> parseStudentsFile(Path studentsFilePath) {
-		
-	}
-	
 	public static List<Long[]> parseFile(Path filePath) {
 		Files.readAllLines(filePath)
 			.stream()
 			.skip(1)
-			.map(toLongArray(line -> line.split(",")))
-			.collect(Collectors.toList());
+			.map(toLongArray(line -> line.split(",")));
 	}
 	
-	private static long[] toLongArray(String[] array) {
+	public static long[] toLongArray(String[] array) {
 		return Arrays.stream(array)
 				.mapToLong(Long::parseLong)
 				.toArray();
