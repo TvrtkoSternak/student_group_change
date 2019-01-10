@@ -1,7 +1,10 @@
 package hr.fer.zemris.optjava.dz3;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Parser {
 
@@ -24,6 +27,24 @@ public class Parser {
 			
 		};
 		
+	}
+	
+	private static HashMap<Pair, Pair> parseStudentsFile(Path studentsFilePath) {
+		
+	}
+	
+	public static List<Long[]> parseFile(Path filePath) {
+		Files.readAllLines(filePath)
+			.stream()
+			.skip(1)
+			.map(toLongArray(line -> line.split(",")))
+			.collect(Collectors.toList());
+	}
+	
+	private static long[] toLongArray(String[] array) {
+		return Arrays.stream(array)
+				.mapToLong(Long::parseLong)
+				.toArray();
 	}
 	
 	private static double[] toDoubleArray(String[] array) {
