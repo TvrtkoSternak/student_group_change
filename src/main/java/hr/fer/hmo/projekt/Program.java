@@ -9,11 +9,17 @@ import hr.fer.hmo.projekt.utils.HardConstraints;
 import hr.fer.hmo.projekt.utils.StudentGroup;
 import hr.fer.zemris.optjava.dz3.IFunction;
 import hr.fer.zemris.optjava.dz3.IOptAlgorithm;
+import hr.fer.zemris.optjava.dz3.ITempSchedule;
 import hr.fer.zemris.optjava.dz3.Parser;
 import hr.fer.zemris.optjava.dz3.SimulatedAnnealing;
 import hr.fer.zemris.optjava.dz3.SingleObjectiveSolution;
+import hr.fer.zemris.optjava.dz3.schedules.GeometricTempSchedule;
 
 public class Program {
+	private static final double ALPHA = 0.99;
+	private static final double INITIAL_TEMP = 1000;
+	private static final int OUTER_LOOP = 1000;
+	private static final int INNER_LOOP = 5000;
 
 	public static void main(String[] args) {
 		
@@ -54,14 +60,16 @@ public class Program {
 		HardConstraints hardConstraints = new HardConstraints();
 		// fill hard constraints
 		
-		IFunction f = FunctionFactory.getFunction(students, requests, overlaps, limits, hardConstraints);
+		IFunction function = FunctionFactory.getFunction(students, requests, overlaps, limits, hardConstraints);
+		ITempSchedule tempSchedule = new GeometricTempSchedule(ALPHA, INITIAL_TEMP, INNER_LOOP, OUTER_LOOP);
+		
 		
 		IOptAlgorithm<SingleObjectiveSolution> alg = new SimulatedAnnealing(
-				f, 
+				function,
 				false, 
 				startingSolution, 
-				schedule, 
-				neighborhoodGenerator, 
+				tempSchedule, 
+				,
 				decoder
 		);
 		
