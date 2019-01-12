@@ -36,36 +36,40 @@ public class HardConstraints {
 		requests.add(new Request(studentId, activityId, requestedGroupId));
 	}
 	
-	public boolean fulfilled(long[] solution) {
-		for (int i = 0; i < solution.length; i++) {
-			if (!changeFulfillsConstraints(solution, i)) {
-				return false;
-			}
-		}
-		return true;
-	}
+//	public boolean fulfilled(long[] solution) {
+//		for (int i = 0; i < solution.length; i++) {
+//			if (!changeFulfillsConstraints(solution, i)) {
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
+//	
+//	private boolean changeFulfillsConstraints(long[] solution, int i) {
+//		
+//	}
+//	
+//	private boolean fulfilCountConstraints(long groupId, long studentsCount) {
+//		return minCountConstraints.get(groupId) <= studentsCount 
+//				&& maxCountConstraints.get(groupId) >= studentsCount;
+//	}
 	
-	private boolean changeFulfillsConstraints(long[] solution, int i) {
-		
-	}
-	
-	private boolean fulfilCountConstraints(long groupId, long studentsCount) {
-		return minCountConstraints.get(groupId) <= studentsCount 
-				&& maxCountConstraints.get(groupId) >= studentsCount;
-	}
-	
-	private boolean noOverlaps(long startingGroupId, long newGroupId) {
+	public boolean noOverlaps(long startingGroupId, long newGroupId) {
 		groupPair.setVar1(startingGroupId);
 		groupPair.setVar2(newGroupId);
 		
 		return !forbiddenOverlaps.contains(groupPair);
 	}
 	
-	private boolean goodRequest(long studentId, long activityId, long requestedGroupId) {
+	public boolean goodRequest(long studentId, long activityId, long requestedGroupId) {
 		request.studentId = studentId;
 		request.activityId = activityId;
 		request.requestedGroupId = requestedGroupId;
 		
 		return requests.contains(request);
+	}
+	
+	public long penalty(long[] solution) {
+		return 0;
 	}
 }

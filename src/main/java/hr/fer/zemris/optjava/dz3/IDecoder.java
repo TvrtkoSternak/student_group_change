@@ -2,6 +2,6 @@ package hr.fer.zemris.optjava.dz3;
 
 public interface IDecoder<T> {
 
-	double[] decode(T solution);
-	void decode(T solution, double[] decoded);
+	long[] decode(T solution);
+	void decode(T solution, long[] decoded);
 }
