@@ -1,6 +1,7 @@
 package hr.fer.zemris.optjava.dz3;
 
 import java.util.Random;
+import java.util.StringJoiner;
 
 public class SimulatedAnnealing<T extends SingleObjectiveSolution> implements IOptAlgorithm<T> {
 
@@ -26,21 +27,33 @@ public class SimulatedAnnealing<T extends SingleObjectiveSolution> implements IO
 		Random rand = new Random();
 		
 		T solution = startingSolution;
-		solution.setFitness(function.valueAt(decoder.decode(solution)));
+		solution.setFitness(function.fitness(decoder.decode(solution)));
 
 		for (int i = 0; i < schedule.getOuterLoopCounter(); i++) {
 			double temp = schedule.getNextTemperature();
 			for (int j = 0; j < schedule.getInnerLoopCounter(); j++) {
 				T neighbor = neighborhoodGenerator.randomNeighbor(solution);
-				neighbor.setFitness(function.valueAt(decoder.decode(neighbor)));
+				
+				long fitness = function.fitness(decoder.decode(neighbor));
+				
+				neighbor.setFitness(fitness);
 				
 				solution = accept(solution, neighbor, temp, rand) ? neighbor : solution;
+				
+				System.out.println(j + ". = " + fitness + "; T=" + temp);
+
+//				System.out.println(j + " = " + fitness + "; T=" + temp);
 			}
-			StringBuilder sb = new StringBuilder();
-			for (double d : decoder.decode(solution)) {
-				sb.append(d + ", ");
-			}
-			System.out.println(i + ". " + sb.toString() + " = " + function.valueAt(decoder.decode(solution)) + "; T=" + temp);
+//			StringJoiner sb = new StringJoiner(",");
+//			for (double d : decoder.decode(solution)) {
+//				sb.add(String.valueOf(d));
+//			}
+//			System.out.println(solution);
+//			if (solution.toString().split(" ")[0].equals(solution.toString().split(" ")[1]) && solution.toString().split(" ")[0].equals("1")) {
+//				System.out.println("Double jump");
+//				System.exit(1);
+//			}
+			System.out.println(i + ". = " + function.fitness(decoder.decode(solution)) + "; T=" + temp);
 		}
 	}
 	

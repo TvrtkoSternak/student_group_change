@@ -1,5 +1,6 @@
 package hr.fer.hmo.projekt;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +31,7 @@ public class Program {
 	private static final int OUTER_LOOP = 1000;
 	private static final int INNER_LOOP = 5000;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		if (args.length != 8) {
 			System.out.println("Invalid number of input arguments.");
@@ -83,9 +84,10 @@ public class Program {
 		}
 		
 		for (int i = 0; i < students.length; i += 5) {
+			hardConstraints.addRequest(students[i], students[i+1], students[i+3]);
 			for (int j = i+5; j < students.length; j += 5) {
 				if (students[i] == students[j]) {
-					groupOverlaps.remove(new Pair(students[i+3], students[j+3]));
+//					groupOverlaps.remove(new Pair(students[i+3], students[j+3]));
 				}
 			}
 		}
@@ -96,13 +98,13 @@ public class Program {
 		
 		for (int i = 0; i < limits.length; i += 6) {
 			hardConstraints.addCountConstraints(limits[i], limits[i+2], limits[i+4]);
-		}
+		}	
 		
 		IFunction function = FunctionFactory.getFunction(students, requests, overlaps, limits, awardActivity, awardStudent, minMaxPenalty, hardConstraints);
 		ITempSchedule tempSchedule = new GeometricTempSchedule(ALPHA, INITIAL_TEMP, INNER_LOOP, OUTER_LOOP);
-		LongArraySolution initial = new LongArraySolution();
+		LongArraySolution initial = new LongArraySolution(requests.length/3);
 		INeighborhood<LongArraySolution> neighborhood = new LongArrayNeighborhood();
-		IDecoder<LongArraySolution> decoder = new LongArrayDecoder();
+		IDecoder<LongArraySolution> decoder = new LongArrayDecoder(students, requests, limits);
 		
 		IOptAlgorithm<LongArraySolution> alg = new SimulatedAnnealing<LongArraySolution>(
 				function,
@@ -112,6 +114,8 @@ public class Program {
 				neighborhood,
 				decoder
 		);
+		
+		System.out.println("Files parsed, starting...");
 		
 		alg.run();
 	}
